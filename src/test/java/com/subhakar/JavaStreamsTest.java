@@ -1,5 +1,6 @@
 package com.subhakar;
 
+import com.subhakar.streams.models.Customer;
 import com.subhakar.streams.models.Order;
 import com.subhakar.streams.models.Product;
 import com.subhakar.streams.repository.CustomerRepository;
@@ -237,6 +238,37 @@ class JavaStreamsTest {
                 ));
         long endTime = System.currentTimeMillis();
         log.info(String.format("exercise 10 - execution time: %1$d ms", (endTime - startTime)));
+        log.info(result.toString());
+    }
+
+    @Test
+    @DisplayName("Obtain a data map of customer and list of orders")
+    public void exercise12() {
+        long startTime = System.currentTimeMillis();
+        HashMap<Customer, List<Order>> result = orderRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getCustomer(),
+                        HashMap::new,
+                        Collectors.mapping(order -> order, Collectors.toList())));
+
+        long endTime = System.currentTimeMillis();
+        log.info(String.format("exercise 12- execution time: %1$d ms", (endTime - startTime)));
+        log.info(result.toString());
+    }
+
+    @Test
+    @DisplayName("Obtain a data map of customer_id and list of order_id(s)")
+    public void exercise12a() {
+        long startTime = System.currentTimeMillis();
+        HashMap<Long, List<Long>> result = orderRepository.findAll()
+                .stream()
+                .collect(Collectors.groupingBy(
+                        order -> order.getCustomer().getId(),
+                        HashMap::new,
+                        Collectors.mapping(Order::getId, Collectors.toList())));
+        long endTime = System.currentTimeMillis();
+        log.info(String.format("exercise 12a- execution time: %1$d ms", (endTime - startTime)));
         log.info(result.toString());
     }
 }
